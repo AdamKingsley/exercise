@@ -32,6 +32,7 @@ def svd_batch(matrix, percents=[0.1]):
 if __name__ == '__main__':
     file_path = 'HIMYM_NOT_SQUARE.jpg'
     # file_path = 'HIMYM_SQUARE.jpg'
+    # file_path = 'TEST.jpg'
     image_data = np.asarray(Image.open(file_path))
     print(np.shape(image_data))
     R0 = image_data[:, :, 0]
@@ -44,7 +45,11 @@ if __name__ == '__main__':
         G1 = svd(G0, percent)
         B1 = svd(B0, percent)
         # 0, 1, 2 axis = 2
-        new_pic = Image.fromarray(np.stack((R1, G1, B1), axis=2).astype(np.uint8))
+        new_pic = np.stack((R1, G1, B1), axis=2)
+        new_pic[new_pic > 255] = 255
+        new_pic[new_pic < 0] = 0
+        new_pic = Image.fromarray(new_pic.astype(np.uint8))
+
         file_util.check_dir('./data/')
         save_path = os.path.join('./data/', file_util.split_file(file_path)[0] + '_' + str(percent) + '.jpg')
         new_pic.save(save_path)
